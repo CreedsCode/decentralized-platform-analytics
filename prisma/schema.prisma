@@ -11,8 +11,96 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model ReceivedWebhook {
+  id              Int              @id @default(autoincrement())
+  createdAt       DateTime         @default(now())
+  //
+  confirmed       Boolean
+  chainId         String // TODO: give it its own type enum? as table with assosiated contract adresses and abi?
+  abi             String
+  moralisStreamId String
+  tag             String
+  retries         Int
+  blockId         String
+  block           Block            @relation(fields: [blockId], references: [id])
+  logs            TransactionLog[]
+  transactions    Transaction[]
+
+  // TODO:
+  //  "txsInternal": [],
+  //   "erc20Transfers": [],
+  //   "erc20Approvals": [],
+  //   "nftTokenApprovals": [],
+  //   "nftApprovals": {
+  //     "ERC721": [],
+  //     "ERC1155": []
+  //   },
+  //   "nftTransfers": [
+  //     {
+  //       "operator": null,
+  //       "from": "0x0000000000000000000000000000000000000000",
+  //       "to": "0x5497cfe8748e61b3d444c3aeb4b579a516a88117",
+  //       "tokenId": "12",
+  //       "amount": "1",
+  //       "transactionHash": "0x422f7579d804f6590342f24b6e9f1512e83326ebb13549e3946ed9619a7abb8e",
+  //       "logIndex": "104",
+  //       "contract": "0x67c3ac531084ab5e6e04d4bb0fc7766e27b81546",
+  //       "tokenName": "TalentLayerID",
+  //       "tokenSymbol": "TID",
+  //       "tokenContractType": "ERC721"
+  //     }
+  //   ],
+  //   "nativeBalances": []
+
+  @@index([blockId])
+  @@map("ReceivedTransaction")
+}
+
+model Block {
+  id                  String            @id // chainid-blockNumber
+  ReceivedTransaction ReceivedWebhook[]
+  hash                String
+  timestamp           String // TODO: transform to DatetimeObj
+}
+
+model TransactionLog {
+  id              Int     @id @default(autoincrement())
+  logIndex        Int
+  transactionHash String
+  address         String
+  data            String  @db.Text
+  topic0          String? @db.Text
+  topic1          String? @db.Text
+  topic2          String? @db.Text
+  topic3          String? @db.Text
+
+  ReceivedWebhook   ReceivedWebhook? @relation(fields: [receivedWebhookId], references: [id])
+  receivedWebhookId Int?
+
+  @@index([receivedWebhookId])
+}
+
+model Transaction {
+  id                       Int              @id @default(autoincrement())
+  gas                      Int
+  gasPrice                 Int
+  nonce                    Int
+  input                    String
+  transactionIndex         Int
+  fromAddress              String
+  toAddress                String
+  value                    Int
+  type                     Int
+  v                        Int
+  r                        Int
+  s                        Int
+  receiptCumulativeGasUsed Int
+  receiptGasUsed           Int
+  receiptContractAddress   String?
+  receiptRoot              String?
+  receiptStatus            Int
+  ReceivedWebhook          ReceivedWebhook? @relation(fields: [receivedWebhookId], references: [id])
+  receivedWebhookId        Int?
+
+  @@index([receivedWebhookId])
 }
