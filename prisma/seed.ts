@@ -1,11 +1,13 @@
-import { Block, PrismaClient } from "@prisma/client";
+import { Block, PrismaClient, TransactionLog } from "@prisma/client";
 import webhookMock from "/home/wsl/Development/TalentLayer/talentlayer-indi-pi/src/platform_test.json";
 
 const prisma = new PrismaClient();
 
 async function main() {
+  console.log("Seeding starting");
+
   webhookMock.forEach(async (webhookData: any) => {
-    console.log(webhookData["confirmed"]);
+    console.log(webhookData["streamId"]);
 
     const receivedWebhook = await prisma.receivedWebhook.create({
       data: {
@@ -27,20 +29,19 @@ async function main() {
 
     const transactionLogs = webhookData["logs"];
     transactionLogs.forEach(async (transactionLog: any) => {
-      console.log(transactionLog[0]);
+      console.log(transactionLog);
 
-      await prisma.transactionLog.create({
-        data: {
-          logIndex: Number.parseInt(transactionLog["logIndex"]),
-          transactionHash: transactionLog["transactionHash"],
-          address: transactionLog["address"],
-          data: transactionLog["data"],
-          topic0: transactionLog["topic0"],
-          topic1: transactionLog["topic1"],
-          topic2: transactionLog["topic2"],
-          topic3: transactionLog["topic3"],
-          receivedWebhookId: receivedWebhook.id,
-        },
+      await getOrCreateLog({
+        id: `${receivedWebhook.blockId}-${transactionLog["logIndex"]}`,
+        logIndex: Number.parseInt(transactionLog["logIndex"]),
+        transactionHash: transactionLog["transactionHash"],
+        address: transactionLog["address"],
+        data: transactionLog["data"],
+        topic0: transactionLog["topic0"],
+        topic1: transactionLog["topic1"],
+        topic2: transactionLog["topic2"],
+        topic3: transactionLog["topic3"],
+        receivedWebhookId: receivedWebhook.id,
       });
     });
   });
@@ -61,6 +62,8 @@ async function getOrCreateBlock(_block: Block): Promise<Block> {
       id: _block.id,
     },
   });
+  console.log(block);
+
   if (!block) {
     console.log("New block!");
 
@@ -73,4 +76,33 @@ async function getOrCreateBlock(_block: Block): Promise<Block> {
     });
   }
   return block;
+}
+
+async function getOrCreateLog(_log: TransactionLog): Promise<TransactionLog> {
+  let log = await prisma.transactionLog.findUnique({
+    where: {
+      id: _log.id,
+    },
+  });
+  if (!log) {
+    console.log("New log!");
+
+    log = await prisma.transactionLog.create({
+      data: {
+        id: _log.id,
+        logIndex: _log.logIndex,
+        transactionHash: _log.transactionHash,
+        address: _log.address,
+        data: _log.data,
+        topic0: _log.topic0,
+        topic1: _log.topic1,
+        topic2: _log.topic2,
+        topic3: _log.topic3,
+        receivedWebhookId: _log.receivedWebhookId,
+      },
+    });
+  }
+  console.log(log);
+
+  return log;
 }

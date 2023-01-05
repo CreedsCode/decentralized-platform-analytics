@@ -10,7 +10,6 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(405).send({ message: "Only POST requests allowed" });
     return;
   }
-
   const webhookData = JSON.parse(req.body);
   console.log(webhookData["confirmed"]);
 
@@ -38,6 +37,7 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
 
     await prisma.transactionLog.create({
       data: {
+        id: `${receivedWebhook.blockId}-${transactionLog["logIndex"]}`,
         logIndex: Number.parseInt(transactionLog["logIndex"]),
         transactionHash: transactionLog["transactionHash"],
         address: transactionLog["address"],

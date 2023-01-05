@@ -64,7 +64,7 @@ model Block {
 }
 
 model TransactionLog {
-  id              Int     @id @default(autoincrement())
+  id              String  @id // blockid-logIndex
   logIndex        Int
   transactionHash String
   address         String
