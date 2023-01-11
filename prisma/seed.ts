@@ -1,4 +1,5 @@
-import { Block, PrismaClient, TransactionLog } from "@prisma/client";
+import type { Block, Transaction, TransactionLog } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import webhookMock from "/home/wsl/Development/TalentLayer/talentlayer-indi-pi/src/platform_test.json";
 
 const prisma = new PrismaClient();
@@ -9,6 +10,7 @@ async function main() {
   webhookMock.forEach(async (webhookData: any) => {
     console.log(webhookData["streamId"]);
 
+    console.log("start with the received webhook");
     const receivedWebhook = await prisma.receivedWebhook.create({
       data: {
         confirmed: webhookData["confirmed"],
@@ -22,15 +24,45 @@ async function main() {
           hash: webhookData["block"]["hash"],
           timestamp: webhookData["block"]["timestamp"],
         }).then((data) => {
+          console.log("adding the block");
+
           return data.id;
         }),
       },
     });
 
+    // console.log("start with the txs");
+    // const transactions = webhookData["txs"];
+    // transactions.forEach(async (transaction: any) => {
+    //   console.log("Transaction");
+
+    //   await getOrCreateTransaction({
+    //     id: `${receivedWebhook.blockId}-${transaction["hash"]}`,
+    //     gas: Number.parseInt(transaction["gas"]),
+    //     gasPrice: Number.parseInt(transaction["gasPrice"]),
+    //     nonce: Number.parseInt(transaction["nonce"]),
+    //     input: transaction["input"],
+    //     transactionIndex: Number.parseInt(transaction["transactionIndex"]),
+    //     fromAddress: transaction["fromAddress"],
+    //     toAddress: transaction["toAddress"],
+    //     value: Number.parseInt(transaction["value"]),
+    //     type: Number.parseInt(transaction["type"]),
+    //     v: transaction["v"]),
+    //     r: transaction["r"]),
+    //     s: transaction["s"]),
+    //     receiptCumulativeGasUsed: Number.parseInt(
+    //       transaction["receiptCumulativeGasUse"]
+    //     ),
+    //     receiptGasUsed: Number.parseInt(transaction["receiptGasUsed"]),
+    //     receiptContractAddress: transaction["receiptContractAddress"],
+    //     receiptRoot: transaction["receiptRoot"],
+    //     receiptStatus: Number.parseInt(transaction["receiptStatus"]),
+    //     receivedWebhookId: receivedWebhook.id,
+    //   });
+    // });
+    console.log("lets go logs");
     const transactionLogs = webhookData["logs"];
     transactionLogs.forEach(async (transactionLog: any) => {
-      console.log(transactionLog);
-
       await getOrCreateLog({
         id: `${receivedWebhook.blockId}-${transactionLog["logIndex"]}`,
         logIndex: Number.parseInt(transactionLog["logIndex"]),
@@ -41,6 +73,35 @@ async function main() {
         topic1: transactionLog["topic1"],
         topic2: transactionLog["topic2"],
         topic3: transactionLog["topic3"],
+        receivedWebhookId: receivedWebhook.id,
+      });
+    });
+
+    console.log("lets go txs");
+    const transactions = webhookData["txs"];
+    transactions.forEach(async (transaction: any) => {
+      console.log(transaction);
+      await getOrCreateTransaction({
+        id: `${receivedWebhook.blockId}-${transaction["hash"]}`,
+        gas: BigInt(transaction["gas"]),
+        gasPrice: BigInt(transaction["gasPrice"]),
+        nonce: Number.parseInt(transaction["nonce"]),
+        input: transaction["input"],
+        transactionIndex: Number.parseInt(transaction["transactionIndex"]),
+        fromAddress: transaction["fromAddress"],
+        toAddress: transaction["toAddress"],
+        value: Number.parseInt(transaction["value"]),
+        type: Number.parseInt(transaction["type"]),
+        v: Number.parseInt(transaction["v"]),
+        r: BigInt(transaction["r"]),
+        s: BigInt(transaction["s"]),
+        receiptCumulativeGasUsed: BigInt(
+          transaction["receiptCumulativeGasUsed"]
+        ),
+        receiptGasUsed: BigInt(transaction["receiptGasUsed"]),
+        receiptContractAddress: transaction["receiptContractAddress"],
+        receiptRoot: transaction["receiptRoot"],
+        receiptStatus: Number.parseInt(transaction["receiptStatus"]),
         receivedWebhookId: receivedWebhook.id,
       });
     });
@@ -62,11 +123,8 @@ async function getOrCreateBlock(_block: Block): Promise<Block> {
       id: _block.id,
     },
   });
-  console.log(block);
 
   if (!block) {
-    console.log("New block!");
-
     block = await prisma.block.create({
       data: {
         id: _block.id,
@@ -105,4 +163,43 @@ async function getOrCreateLog(_log: TransactionLog): Promise<TransactionLog> {
   console.log(log);
 
   return log;
+}
+
+async function getOrCreateTransaction(
+  _transaction: Transaction
+): Promise<Transaction> {
+  let transaction = await prisma.transaction.findUnique({
+    where: {
+      id: _transaction.id,
+    },
+  });
+  if (!transaction) {
+    console.log("New txs!");
+
+    transaction = await prisma.transaction.create({
+      data: {
+        id: _transaction.id,
+        gas: _transaction.gas,
+        gasPrice: _transaction.gasPrice,
+        nonce: _transaction.nonce,
+        input: _transaction.input,
+        transactionIndex: _transaction.transactionIndex,
+        fromAddress: _transaction.fromAddress,
+        toAddress: _transaction.toAddress,
+        value: _transaction.value,
+        type: _transaction.type,
+        v: _transaction.v,
+        r: _transaction.r,
+        s: _transaction.s,
+        receiptCumulativeGasUsed: _transaction.receiptCumulativeGasUsed,
+        receiptGasUsed: _transaction.receiptGasUsed,
+        receiptContractAddress: _transaction.receiptContractAddress,
+        receiptRoot: _transaction.receiptRoot,
+        receiptStatus: _transaction.receiptStatus,
+      },
+    });
+  }
+  console.log(transaction);
+
+  return transaction;
 }

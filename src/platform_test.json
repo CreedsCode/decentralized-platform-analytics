@@ -375,5 +375,97 @@
       }
     ],
     "nativeBalances": []
+  },
+  {
+    "confirmed": false,
+    "chainId": "0x5",
+    "abi": [],
+    "streamId": "495dd47c-678c-43c8-ab7b-9242467b7e37",
+    "tag": "test",
+    "retries": 0,
+    "block": {
+      "number": "8261691",
+      "hash": "0x2f3071900a242336ea57d09434b75693501521c44809a9c922b3731668eabf8f",
+      "timestamp": "1672939572"
+    },
+    "logs": [],
+    "txs": [
+      {
+        "hash": "0x7b49300e8fecdf1f9639f250d91a74adaaf3e4ee2672306f34497bd14f8ae6e1",
+        "gas": "157633",
+        "gasPrice": "8762860374",
+        "nonce": "0",
+        "input": "0x77097fc8000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000008436f757374656175000000000000000000000000000000000000000000000000",
+        "transactionIndex": "29",
+        "fromAddress": "0x7bfd48a5e2b731f349582d42e7f3a800b1a429e0",
+        "toAddress": "0x11119ed887aec1302e2caf49942f891667a31bbc",
+        "value": "0",
+        "type": "2",
+        "v": "0",
+        "r": "69964578683219257491743696717069041277722234692785660325877269043465895380907",
+        "s": "7167095481252651529476786397693232570554159638624737148801877587358897346798",
+        "receiptCumulativeGasUsed": "3447923",
+        "receiptGasUsed": "157633",
+        "receiptContractAddress": null,
+        "receiptRoot": null,
+        "receiptStatus": "1"
+      }
+    ],
+    "txsInternal": [],
+    "erc20Transfers": [],
+    "erc20Approvals": [],
+    "nftTokenApprovals": [],
+    "nftApprovals": {
+      "ERC721": [],
+      "ERC1155": []
+    },
+    "nftTransfers": [],
+    "nativeBalances": []
+  },
+  {
+    "confirmed": true,
+    "chainId": "0x5",
+    "abi": [],
+    "streamId": "495dd47c-678c-43c8-ab7b-9242467b7e37",
+    "tag": "test",
+    "retries": 0,
+    "block": {
+      "number": "8261691",
+      "hash": "0x2f3071900a242336ea57d09434b75693501521c44809a9c922b3731668eabf8f",
+      "timestamp": "1672939572"
+    },
+    "logs": [],
+    "txs": [
+      {
+        "hash": "0x7b49300e8fecdf1f9639f250d91a74adaaf3e4ee2672306f34497bd14f8ae6e1",
+        "gas": "157633",
+        "gasPrice": "8762860374",
+        "nonce": "0",
+        "input": "0x77097fc8000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000008436f757374656175000000000000000000000000000000000000000000000000",
+        "transactionIndex": "29",
+        "fromAddress": "0x7bfd48a5e2b731f349582d42e7f3a800b1a429e0",
+        "toAddress": "0x11119ed887aec1302e2caf49942f891667a31bbc",
+        "value": "0",
+        "type": "2",
+        "v": "0",
+        "r": "69964578683219257491743696717069041277722234692785660325877269043465895380907",
+        "s": "7167095481252651529476786397693232570554159638624737148801877587358897346798",
+        "receiptCumulativeGasUsed": "3447923",
+        "receiptGasUsed": "157633",
+        "receiptContractAddress": null,
+        "receiptRoot": null,
+        "receiptStatus": "1"
+      }
+    ],
+    "txsInternal": [],
+    "erc20Transfers": [],
+    "erc20Approvals": [],
+    "nftTokenApprovals": [],
+    "nftApprovals": {
+      "ERC721": [],
+      "ERC1155": []
+    },
+    "nftTransfers": [],
+    "nativeBalances": []
   }
 ]

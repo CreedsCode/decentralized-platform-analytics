@@ -81,9 +81,9 @@ model TransactionLog {
 }
 
 model Transaction {
-  id                       Int              @id @default(autoincrement())
-  gas                      Int
-  gasPrice                 Int
+  id                       String           @id // blockid-hash
+  gas                      BigInt
+  gasPrice                 BigInt
   nonce                    Int
   input                    String
   transactionIndex         Int
@@ -92,10 +92,10 @@ model Transaction {
   value                    Int
   type                     Int
   v                        Int
-  r                        Int
-  s                        Int
-  receiptCumulativeGasUsed Int
-  receiptGasUsed           Int
+  r                        BigInt
+  s                        BigInt
+  receiptCumulativeGasUsed BigInt
+  receiptGasUsed           BigInt
   receiptContractAddress   String?
   receiptRoot              String?
   receiptStatus            Int
