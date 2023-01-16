@@ -7,8 +7,8 @@ export async function getOrCreateBlock(_block: Block): Promise<Block> {
       id: _block.id,
     },
   });
+
   if (!block) {
-    console.log("New block created!");
     block = await prisma.block.create({
       data: {
         id: _block.id,
@@ -29,7 +29,7 @@ export async function getOrCreateLog(
     },
   });
   if (!log) {
-    console.log("New block!");
+    console.log("New log!");
 
     log = await prisma.transactionLog.create({
       data: {
@@ -46,8 +46,11 @@ export async function getOrCreateLog(
       },
     });
   }
+  console.log(log);
+
   return log;
 }
+
 export async function getOrCreateTransaction(
   _transaction: Transaction
 ): Promise<Transaction> {
@@ -57,7 +60,7 @@ export async function getOrCreateTransaction(
     },
   });
   if (!transaction) {
-    console.log("New log!");
+    console.log("New txs!");
 
     transaction = await prisma.transaction.create({
       data: {
@@ -82,5 +85,6 @@ export async function getOrCreateTransaction(
       },
     });
   }
+
   return transaction;
 }
