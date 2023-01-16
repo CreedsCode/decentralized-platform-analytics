@@ -26,32 +26,6 @@ model ReceivedWebhook {
   logs            TransactionLog[]
   transactions    Transaction[]
 
-  // TODO:
-  //  "txsInternal": [],
-  //   "erc20Transfers": [],
-  //   "erc20Approvals": [],
-  //   "nftTokenApprovals": [],
-  //   "nftApprovals": {
-  //     "ERC721": [],
-  //     "ERC1155": []
-  //   },
-  //   "nftTransfers": [
-  //     {
-  //       "operator": null,
-  //       "from": "0x0000000000000000000000000000000000000000",
-  //       "to": "0x5497cfe8748e61b3d444c3aeb4b579a516a88117",
-  //       "tokenId": "12",
-  //       "amount": "1",
-  //       "transactionHash": "0x422f7579d804f6590342f24b6e9f1512e83326ebb13549e3946ed9619a7abb8e",
-  //       "logIndex": "104",
-  //       "contract": "0x67c3ac531084ab5e6e04d4bb0fc7766e27b81546",
-  //       "tokenName": "TalentLayerID",
-  //       "tokenSymbol": "TID",
-  //       "tokenContractType": "ERC721"
-  //     }
-  //   ],
-  //   "nativeBalances": []
-
   @@index([blockId])
   @@map("ReceivedTransaction")
 }
@@ -64,7 +38,7 @@ model Block {
 }
 
 model TransactionLog {
-  id              String  @id // blockid-logIndex
+  id              String  @id // blockid-transactionHash-logIndex
   logIndex        Int
   transactionHash String
   address         String

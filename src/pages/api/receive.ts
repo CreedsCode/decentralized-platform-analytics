@@ -9,15 +9,18 @@ import {
 } from "../../server/getters";
 
 const receive = async (req: NextApiRequest, res: NextApiResponse) => {
+  console.log("Received new webhook call!");
+
   // validate the origin. should only be from moralis
   if (req.method !== "POST") {
+    console.log("Not post a request, exiting!");
     res.status(405).send({ message: "Only POST requests allowed" });
     return;
   }
   const webhookData = JSON.parse(req.body);
-  console.log(webhookData["streamId"]);
+  console.log("moralis id ", webhookData["streamId"]);
 
-  console.log("start with the received webhook");
+  console.log("Indexing the webook.");
   const receivedWebhook = await prisma.receivedWebhook.create({
     data: {
       confirmed: webhookData["confirmed"],
@@ -30,19 +33,17 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
         id: `${webhookData["chainId"]}-${webhookData["block"]["number"]}`,
         hash: webhookData["block"]["hash"],
         timestamp: webhookData["block"]["timestamp"],
-      }).then((data) => {
-        console.log("adding the block");
-
-        return data.id;
+      }).then((block) => {
+        return block.id;
       }),
     },
   });
 
-  console.log("lets go logs");
+  console.log("indexing the transaction logs");
   const transactionLogs = webhookData["logs"];
   transactionLogs.forEach(async (transactionLog: any) => {
     await getOrCreateLog({
-      id: `${receivedWebhook.blockId}-${transactionLog["logIndex"]}`,
+      id: `${receivedWebhook.blockId}-${transactionLog["transactionHash"]}-${transactionLog["logIndex"]}`,
       logIndex: Number.parseInt(transactionLog["logIndex"]),
       transactionHash: transactionLog["transactionHash"],
       address: transactionLog["address"],
@@ -55,10 +56,9 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
     });
   });
 
-  console.log("lets go txs");
+  console.log("indexing the transactions");
   const transactions = webhookData["txs"];
   transactions.forEach(async (transaction: any) => {
-    console.log(transaction);
     await getOrCreateTransaction({
       id: `${receivedWebhook.blockId}-${transaction["hash"]}`,
       gas: transaction["gas"],

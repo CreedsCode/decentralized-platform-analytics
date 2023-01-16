@@ -2,6 +2,7 @@ import { Block, Transaction, TransactionLog } from "@prisma/client";
 import { prisma } from "../server/db/client";
 
 export async function getOrCreateBlock(_block: Block): Promise<Block> {
+  console.log("Searching for block", _block.id);
   let block = await prisma.block.findUnique({
     where: {
       id: _block.id,
@@ -9,6 +10,8 @@ export async function getOrCreateBlock(_block: Block): Promise<Block> {
   });
 
   if (!block) {
+    console.log("not found, start indexing");
+
     block = await prisma.block.create({
       data: {
         id: _block.id,
@@ -16,6 +19,8 @@ export async function getOrCreateBlock(_block: Block): Promise<Block> {
         timestamp: _block.timestamp,
       },
     });
+
+    console.log("Done indexing!");
   }
   return block;
 }
@@ -23,13 +28,14 @@ export async function getOrCreateBlock(_block: Block): Promise<Block> {
 export async function getOrCreateLog(
   _log: TransactionLog
 ): Promise<TransactionLog> {
+  console.log("Searching for log", _log.id);
   let log = await prisma.transactionLog.findUnique({
     where: {
       id: _log.id,
     },
   });
   if (!log) {
-    console.log("New log!");
+    console.log("not found, start indexing");
 
     log = await prisma.transactionLog.create({
       data: {
@@ -45,8 +51,9 @@ export async function getOrCreateLog(
         receivedWebhookId: _log.receivedWebhookId,
       },
     });
+
+    console.log("Done indexing!");
   }
-  console.log(log);
 
   return log;
 }
@@ -54,13 +61,14 @@ export async function getOrCreateLog(
 export async function getOrCreateTransaction(
   _transaction: Transaction
 ): Promise<Transaction> {
+  console.log("Searching for transaction", _transaction.id);
   let transaction = await prisma.transaction.findUnique({
     where: {
       id: _transaction.id,
     },
   });
   if (!transaction) {
-    console.log("New txs!");
+    console.log("not found, start indexing");
 
     transaction = await prisma.transaction.create({
       data: {
@@ -84,6 +92,8 @@ export async function getOrCreateTransaction(
         receiptStatus: _transaction.receiptStatus,
       },
     });
+
+    console.log("Done indexing!");
   }
 
   return transaction;
