@@ -19,10 +19,15 @@
     "@trpc/next": "^10.0.0",
     "@trpc/react-query": "^10.0.0",
     "@trpc/server": "^10.0.0",
+    "bn.js": "^5.2.1",
+    "bn.js-types": "^1.0.1",
     "next": "13.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "sha3": "^2.1.4",
     "superjson": "1.9.1",
+    "web3-eth-abi": "^1.8.1",
+    "web3-utils": "^1.8.1",
     "zod": "^3.18.0"
   },
   "devDependencies": {

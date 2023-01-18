@@ -1,4 +1,3 @@
-import { TransactionLog } from "@prisma/client";
 import { type NextApiRequest, type NextApiResponse } from "next";
 
 import { prisma } from "../../server/db/client";
@@ -7,11 +6,12 @@ import {
   getOrCreateLog,
   getOrCreateTransaction,
 } from "../../server/getters";
-
+import abi from "./../../../TalentLayerID-Abi.json";
+import BetterDecoder from "../../server/BetterDecoder";
 const receive = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log("Received new webhook call!");
 
-  // validate the origin. should only be from moralis
+  // TODO validate the origin. should only be from moralis
   if (req.method !== "POST") {
     console.log("Not post a request, exiting!");
     res.status(405).send({ message: "Only POST requests allowed" });
@@ -81,6 +81,27 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
       receivedWebhookId: receivedWebhook.id,
     });
   });
+
+  const betterDecoder = new BetterDecoder();
+  betterDecoder.addABI(abi["abi"]);
+  // decoder.addABI([abi["abi"]]);
+  const input_logs = webhookData["logs"].map(function (log: any) {
+    return {
+      data: log["data"],
+      topics: [
+        log["topic0"],
+        log["topic1"],
+        log["topic2"],
+        log["topic3"],
+      ].filter((entry: any) => entry),
+    };
+  });
+
+  // console.log(betterDecoder.decodeLogs(input_logs), "decoding log result");
+  console.log(
+    betterDecoder.decodeMethod(transactions[0]["input"]),
+    "decoding result"
+  );
 
   res.status(200).json("received!");
   return;
