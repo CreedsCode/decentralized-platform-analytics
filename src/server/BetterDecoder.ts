@@ -1,3 +1,4 @@
+import util from "util";
 import { Keccak } from "sha3";
 import { sha3 } from "web3-utils";
 import AbiCoder from "web3-eth-abi";
@@ -8,6 +9,7 @@ interface IState {
 }
 
 const state: IState = {
+  // TODO: MOVE THIS INTO DATABASE
   savedABIs: [],
   methodIDs: {},
 };
@@ -93,13 +95,10 @@ export default class BetterDecoder {
         // const signatureDigest = signature.digest("hex");
         const signature = sha3(signatureString);
         if (signature) {
-          console.log(signature, "first");
           if (abi["type"] === "event") {
             state.methodIDs[signature.slice(2)] = abi;
-            console.log(signature.slice(2), "indexed as event");
           } else {
             state.methodIDs[signature.slice(2, 10)] = abi;
-            console.log(signature.slice(2, 10), "indexed as everything else");
           }
           state.savedABIs = state.savedABIs.concat(abiArray);
         } else {
@@ -111,7 +110,6 @@ export default class BetterDecoder {
   // big copy bast blob that just works
   decodeLogs(logs: Array<any>) {
     console.log("Decoding logs");
-
     return logs
       .filter((log) => log.topics.length > 0)
       .map((logItem) => {

@@ -10,7 +10,26 @@ export const exampleRouter = router({
         greeting: `Hello ${input?.text ?? "world"}`,
       };
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
-  }),
+  addABI: publicProcedure
+    .input(
+      z.object({
+        contractName: z.string(),
+        abi: z.array(
+          z.object({
+            inputs: z.array(
+              z.object({
+                internalType: z.string(),
+                name: z.string(),
+                type: z.string(),
+              })
+            ),
+          })
+        ),
+      })
+    )
+    .mutation(({ input }) => {
+      // prisma.
+
+      return { message: "It worked!" };
+    }),
 });

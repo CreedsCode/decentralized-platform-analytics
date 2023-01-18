@@ -78,3 +78,13 @@ model Transaction {
 
   @@index([receivedWebhookId])
 }
+
+model ContractMethod {
+  id              String   @id
+  createdAt       DateTime @default(now())
+  name            String
+  type            String
+  inputs          String
+  outputs         String
+  stateMutability String
+}
