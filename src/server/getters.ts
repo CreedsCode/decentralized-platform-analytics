@@ -1,4 +1,10 @@
-import { Block, Transaction, TransactionLog } from "@prisma/client";
+import {
+  ABI,
+  Block,
+  ContractMethod,
+  Transaction,
+  TransactionLog,
+} from "@prisma/client";
 import { prisma } from "../server/db/client";
 
 export async function getOrCreateBlock(_block: Block): Promise<Block> {
@@ -97,4 +103,53 @@ export async function getOrCreateTransaction(
   }
 
   return transaction;
+}
+
+export async function getOrCreateContractMethod(
+  _contractMethod: ContractMethod
+): Promise<ContractMethod> {
+  console.log("Searching for contract method", _contractMethod.id);
+  let contractMethod = await prisma.contractMethod.findUnique({
+    where: {
+      id: _contractMethod.id,
+    },
+  });
+
+  if (!contractMethod) {
+    console.log("not found, start indexing");
+    console.log(_contractMethod, "ligma");
+    contractMethod = await prisma.contractMethod.create({
+      data: {
+        id: _contractMethod.id,
+        aBIId: _contractMethod.aBIId,
+        name: _contractMethod.name,
+      },
+    });
+
+    console.log("Done indexing!");
+  }
+  return contractMethod;
+}
+
+export async function getOrCreateABI(_abi: ABI): Promise<ABI> {
+  console.log("Searching for ABI", _abi.id);
+  let abi = await prisma.aBI.findUnique({
+    where: {
+      id: _abi.id,
+    },
+  });
+
+  if (!abi) {
+    console.log("not found, start indexing");
+
+    abi = await prisma.aBI.create({
+      data: {
+        id: _abi.id,
+        abi: _abi.abi,
+      },
+    });
+
+    console.log("Done indexing!");
+  }
+  return abi;
 }

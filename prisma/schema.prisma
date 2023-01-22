@@ -80,11 +80,17 @@ model Transaction {
 }
 
 model ContractMethod {
-  id              String   @id
-  createdAt       DateTime @default(now())
-  name            String
-  type            String
-  inputs          String
-  outputs         String
-  stateMutability String
+  id    String @id
+  name  String
+  abi   ABI    @relation(fields: [aBIId], references: [id])
+  aBIId String
+
+  @@index([aBIId])
+}
+
+model ABI {
+  id             String           @id
+  createdAt      DateTime         @default(now())
+  abi            String           @db.LongText
+  ContractMethod ContractMethod[]
 }

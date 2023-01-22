@@ -23,7 +23,7 @@ interface IRetrivedData {
   name: string;
   params: Array<any>;
 }
-function typeParser(input: any) {
+export function typeParser(input: any) {
   if (input["type"] === "tuple") {
     return `(${input["components"].map(typeParser).join(",")})`;
   }

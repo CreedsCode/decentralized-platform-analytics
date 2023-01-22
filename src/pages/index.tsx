@@ -30,7 +30,10 @@ const Home: NextPage = () => {
           if (e.target.result) {
             // TODO: CHECK IF THIS IS CONTENT IS LIKE AN ABI
             const data = JSON.parse(e.target.result.toString());
-            mutate({ abi: data["abi"], contractName: data["contractName"] });
+            mutate({
+              abi: JSON.stringify(data["abi"]),
+              contractName: data["contractName"],
+            });
           }
         }
       };

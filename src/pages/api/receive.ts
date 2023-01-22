@@ -97,7 +97,7 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
     };
   });
 
-  console.log(betterDecoder.decodeLogs(input_logs), "decoding log result");
+  // console.log(betterDecoder.decodeLogs(input_logs), "decoding log result");
   // console.log(
   //   betterDecoder.decodeMethod(transactions[0]["input"]),
   //   "decoding result"
