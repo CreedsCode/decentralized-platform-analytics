@@ -85,9 +85,11 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
   const betterDecoder = new BetterDecoder();
   betterDecoder.addABI(abi["abi"]);
   // decoder.addABI([abi["abi"]]);
+
   const input_logs = webhookData["logs"].map(function (log: any) {
     return {
       data: log["data"],
+      address: log["address"],
       topics: [
         log["topic0"],
         log["topic1"],
@@ -96,6 +98,10 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
       ].filter((entry: any) => entry),
     };
   });
+
+  console.log(betterDecoder.decodeLogs(input_logs), "here");
+  console.log(betterDecoder.decodeLogs(input_logs)[0].events, "here");
+  console.log(betterDecoder.decodeLogs(input_logs)[1].events, "here");
 
   // console.log(betterDecoder.decodeLogs(input_logs), "decoding log result");
   // console.log(
