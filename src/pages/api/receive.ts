@@ -99,10 +99,6 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
     };
   });
 
-  console.log(betterDecoder.decodeLogs(input_logs), "here");
-  console.log(betterDecoder.decodeLogs(input_logs)[0].events, "here");
-  console.log(betterDecoder.decodeLogs(input_logs)[1].events, "here");
-
   // console.log(betterDecoder.decodeLogs(input_logs), "decoding log result");
   // console.log(
   //   betterDecoder.decodeMethod(transactions[0]["input"]),

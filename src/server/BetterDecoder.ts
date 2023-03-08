@@ -34,7 +34,6 @@ export default class BetterDecoder {
   decodeMethod(data: string) {
     const methodID = data.slice(2, 10);
     const correspondingAbi = state.methodIDs[methodID];
-    console.log(methodID, correspondingAbi, "herebicht");
     if (correspondingAbi) {
       let decoded = AbiCoder.decodeParameters(
         correspondingAbi.inputs,
@@ -107,7 +106,7 @@ export default class BetterDecoder {
       }
     });
   }
-  // big copy bast blob that just works
+  // big copy past blob that just works
   decodeLogs(logs: Array<any>) {
     console.log("Decoding logs");
     return logs

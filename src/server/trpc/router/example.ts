@@ -27,7 +27,6 @@ export const exampleRouter = router({
 
       const nullDate = new Date(0); // Just a null date for the schema will not be passed down to the prisma create context
       abi.map(async function (abi: any) {
-        // START SECTION METHOD DECODING
         const methodSignature = `${abi["name"]}(${abi["inputs"]
           .map(typeParser)
           .join(",")})`;
@@ -55,8 +54,6 @@ export const exampleRouter = router({
               aBIId: storedABI.id,
             });
           }
-        // END   SECTION METHOD DECODING
-
           return { message: "It worked!" };
         } else {
           console.log("idk error");

@@ -54,6 +54,18 @@ model TransactionLog {
   @@index([receivedWebhookId])
 }
 
+// model DecodedLog {
+//   name    String
+//   // events  DecodedLogEvents[]
+//   address String
+// }
+
+// model DecodedLogEvents {
+//   name  String
+//   type  String
+//   value String
+// }
+
 model Transaction {
   id                       String           @id // blockid-hash
   gas                      String
