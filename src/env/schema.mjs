@@ -8,7 +8,13 @@ import { z } from "zod";
 export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "test", "production"]),
+  MINIO_ENDPOINT: z.string(),
+  MINIO_PORT: z.string().min(0).max(65535),
+  MINIO_ACCESSKEY: z.string(),
+  MINIO_SECRETKEY:z.string(),
+  MINIO_BUCKET:z.string()
 });
+
 
 /**
  * Specify your client-side environment variables schema here.

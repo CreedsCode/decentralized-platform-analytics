@@ -1,6 +1,6 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
-
 import { prisma } from "../../server/db/client";
+import minio from "../../server/minio/client";
 import {
   getOrCreateBlock,
   getOrCreateLog,
@@ -8,6 +8,9 @@ import {
 } from "../../server/getters";
 import abi from "./../../../TalentLayerID-Abi.json";
 import BetterDecoder from "../../server/BetterDecoder";
+import { env } from "../../env/server.mjs";
+import { sha3 } from "web3-utils";
+
 const receive = async (req: NextApiRequest, res: NextApiResponse) => {
   console.log("Received new webhook call!");
 
@@ -18,6 +21,20 @@ const receive = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
   const webhookData = JSON.parse(req.body);
+
+  console.log("a bit of backup keeping");
+  try {
+    const objectName = sha3(req.body);
+    // const idk = new Buffer.from(req.body);
+    if (objectName) {
+      minio.putObject(env.MINIO_BUCKET, objectName, req.body, {
+        "Content-Type": "application/json",
+        env: env.NODE_ENV,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
   console.log("moralis id ", webhookData["streamId"]);
 
   console.log("Indexing the webook.");
